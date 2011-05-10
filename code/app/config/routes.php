@@ -31,6 +31,9 @@
  * ...and connect the rest of 'Pages' controller's urls.
  */
     Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+    Router::connect('/farms/', array('controller' => 'farms', 'action' => 'index'));
+    Router::connect('/prices/', array('controller' => 'prices', 'action' => 'index'));
+//    Router::connect('/farms/parishes/*', array('controller' => 'farms', 'action' => 'parishes'));
 
     Router::parseExtensions('xml','json');
 ?>

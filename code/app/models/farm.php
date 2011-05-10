@@ -1,8 +1,5 @@
 <?php
-    /**
-     * 
-     */
-     class Farm extends AppModel {
-        var $name = 'Farm';
-    }
+class Farm extends AppModel {
+	var $name = 'Farm';
+}
 ?>

@@ -1,69 +1,62 @@
 <?php
-    /**
-     * 
-     */
-    class FarmsController extends AppController {
-        var $helpers = array ('Html', 'Form');
-        var $components = array('RequestHandler', 'Webservice.Webservice');     //Components to manage exportation to xml & json
-        var $name = 'Farms';
-        
-        /*This variable is used to manage the amount and ordering of data that is passed 
-            to view (See http://book.cakephp.org/view/1231/Pagination for details  */
-        var $paginate = array(
-            'limit' => 25,
-            'order' => array(
-                'Farm.FarmerID' => 'asc'
-                )
-        );
+class FarmsController extends AppController {
 
-        function index() {
-            $data = $this->paginate('Farm');
-            $this->set('farms', $data);
-            }
+	var $name = 'Farms';
 
-        function view($id = null)
-        {
-            $this->Farm->id = $id;
-            $this->View = 'Webservice.Webservice';
-            $this->set('farms', $this->Farm->read());
-            
-            //Parsing out particular URL parameters
-            $this->set('format', 'xml');
-            $this->set('url', $this->params['url']);
-            $this->set('fullurl', $this->params['pass']);
-        }
+	function index() {
+		$this->Farm->recursive = 0;
+		$this->set('farms', $this->paginate());
+	}
 
-        function add()
-        {
-            if (!empty($this->data)) {
-                if ($this->Farm->save($this->data)) {
-                    $this->Session->setFlash('Your post has been saved.');
-                    $this->redirect(array('action' => 'index'));
-                }
-            }
-        }
+	function view($id = null) {
+		if (!$id) {
+			$this->Session->setFlash(__('Invalid farm', true));
+			$this->redirect(array('action' => 'index'));
+		}
+		$this->set('farm', $this->Farm->read(null, $id));
+	}
 
-        function edit($id=null)
-        {
-            $this->Farm->id = $id;
-            if ($this->Farm->save($this->data)) {
-                $message = 'Saved';
-            } else {
-                $message = 'Error';
-            }
-            $this->set(compact("message"));
-        }
+	function add() {
+		if (!empty($this->data)) {
+			$this->Farm->create();
+			if ($this->Farm->save($this->data)) {
+				$this->Session->setFlash(__('The farm has been saved', true));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The farm could not be saved. Please, try again.', true));
+			}
+		}
+	}
 
-        function delete($id=null)
-        {
-            if($this->Farm->delete($id)) {
-                $message = 'Deleted';
-            } else {
-                $message = 'Error';
-            }
-            $this->set(compact("message"));
-        }
-            
-        }
-    
+	function edit($id = null) {
+		if (!$id && empty($this->data)) {
+			$this->Session->setFlash(__('Invalid farm', true));
+			$this->redirect(array('action' => 'index'));
+		}
+		if (!empty($this->data)) {
+			if ($this->Farm->save($this->data)) {
+				$this->Session->setFlash(__('The farm has been saved', true));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The farm could not be saved. Please, try again.', true));
+			}
+		}
+		if (empty($this->data)) {
+			$this->data = $this->Farm->read(null, $id);
+		}
+	}
+
+	function delete($id = null) {
+		if (!$id) {
+			$this->Session->setFlash(__('Invalid id for farm', true));
+			$this->redirect(array('action'=>'index'));
+		}
+		if ($this->Farm->delete($id)) {
+			$this->Session->setFlash(__('Farm deleted', true));
+			$this->redirect(array('action'=>'index'));
+		}
+		$this->Session->setFlash(__('Farm was not deleted', true));
+		$this->redirect(array('action' => 'index'));
+	}
+}
 ?>
