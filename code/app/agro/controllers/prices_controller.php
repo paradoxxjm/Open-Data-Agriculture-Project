@@ -4,8 +4,25 @@ class PricesController extends AppController {
 	var $name = 'Prices';
 
 	function index() {
+        $url = $this->params['url'];
+//        print_r($url);
+        $query = $this->Parser->queryString('Price',$url);
+
+        if ($url['ext']=="html"){
+            $prices = $this->paginate('Price', $query);
+            $this->set('prices', $prices);
+//            $this->View = 'Webservice.Webservice';
+        }
+        else{
+            $query = queryString($url);
+            //$returndata= false;
+            //$this->View = 'Webservice.Webservice';
+            $data = $this->paginate('Farm',$query);
+        }
+
+
 		$this->Price->recursive = 0;
-		$this->set('prices', $this->paginate());
+		$this->set('prices', $this->paginate('Price', $query));
 	}
 
 	function view($id = null) {

@@ -31,4 +31,5 @@
  * @subpackage    cake.app
  */
 class AppController extends Controller {
+    var $components = array('RequestHandler','Parser','Webservice.Webservice');
 }
