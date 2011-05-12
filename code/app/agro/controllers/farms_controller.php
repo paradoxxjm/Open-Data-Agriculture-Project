@@ -4,8 +4,24 @@ class FarmsController extends AppController {
 	var $name = 'Farms';
 
 	function index() {
-		$this->Farm->recursive = 0;
-		$this->set('farms', $this->paginate());
+        $url = $this->params['url'];
+//        print_r($url);
+        $query = $this->Parser->queryString('Farm',$url);      //queryString function created to build database queries
+
+        if ($url['ext']=="html"){
+            $farmData = $this->paginate('Farm', $query);
+            $this->set('farms', $farmData);
+        }
+        else{   //JSON or XML
+            $query = $this->Parser->queryString('Farm',$url);
+            //$returndata= false;
+            $farmData = $this->paginate('Farm',$query);
+            $this->set('farms', $farmData);
+//            $this->View = 'Webservice.Webservice';
+        }
+
+		$this->Farm->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
+//		$this->set('farms', $this->paginate('Farm', $query));
 	}
 
 	function view($id = null) {

@@ -4,8 +4,26 @@ class CropsController extends AppController {
 	var $name = 'Crops';
 
 	function index() {
-		$this->Crop->recursive = 0;
-		$this->set('crops', $this->paginate());
+        $url = $this->params['url'];
+//        print_r($url);
+        $query = $this->Parser->queryString('Crop',$url);      //queryString function created to build database queries
+
+        if ($url['ext']=="html"){
+            $cropData = $this->paginate('Crop', $query);
+            $this->set('crops', $cropData);
+        }
+        else{   //JSON or XML
+            $query = $this->Parser->queryString('Crop',$url);
+            //$returndata= false;
+            $cropData = $this->paginate('Crop',$query);
+            $this->set('crops', $cropData);
+//            $this->View = 'Webservice.Webservice';
+        }
+
+		$this->Crop->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
+//		$this->set('crops', $this->paginate('Crop', $query));
+//		$this->Crop->recursive = 0;
+//		$this->set('crops', $this->paginate());
 	}
 
 	function view($id = null) {
