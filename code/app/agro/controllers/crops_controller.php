@@ -13,7 +13,7 @@ class CropsController extends AppController {
             $this->set('crops', $cropData);
         }
         else{   //JSON or XML
-            $query = $this->Parser->queryString('Crop',$url);
+//            $query = $this->Parser->queryString('Crop',$url);
             //$returndata= false;
             $cropData = $this->paginate('Crop',$query);
             $this->set('crops', $cropData);
