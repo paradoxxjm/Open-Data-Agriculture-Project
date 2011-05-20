@@ -32,4 +32,7 @@
  */
 class AppController extends Controller {
     var $components = array('RequestHandler','Parser','Webservice.Webservice');
+
+    var $paginate = array (
+        'limit' => 10 );
 }

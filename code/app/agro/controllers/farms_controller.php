@@ -74,5 +74,30 @@ class FarmsController extends AppController {
 		$this->Session->setFlash(__('Farm was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+
+    function parishes($ext = null, $dis = null) {
+        if ($ext == null && $dis == null) {
+            $parishData = $this->Farm->find('all', array('fields' => array('Parish', 'COUNT(Parish) AS parishCount', 'SUM(PropertySize) AS totalSize'), 'group' => array('Parish')));
+            print_r($parishData);
+//            var_dump($parishData);
+            $this->set('parishes',$parishData);
+        }
+        elseif (($ext == ('extension'||'extensions')) && ($dis == null)) {     //data.org.jm/farms/extension(s) 
+//                echo "Returns parishes+extension information";
+            $parishData = $this->Farm->find('all', array('fields' => array( 'Farm.Parish', 'Farm.Extension', '(COUNT("Farm.Extension")) AS farmCount', 
+                '(SUM(PropertySize)) AS propertySum'), 'group'=>'Extension', 'order'=>array('Parish ASC', 'Extension ASC')));
+            $this->set('parishes',$parishData);   
+            $this->render('extensions');     //districts.ctp not created yet
+        }
+        elseif (($ext == ('extension'||'extensions')) && ($dis  == ('district'||'districts'))) {     //data.org.jm/farms/extension(s)/district(s)/
+            //echo "Returns parishes+extensions+districts information";
+            $parishes = $this->Farm->find('all', array('fields' => array( 'Farm.Parish', 'Farm.Extension', 'Farm.District', 
+                '(COUNT("Farm.District")) AS FarmCount', '(SUM(PropertySize)) AS PropertySum'), 'group'=>'District', 
+                'order'=>array('Parish ASC', 'Extension ASC', 'District ASC')));
+            $data = $this->Parser->afterQuery($parishes);
+            //$this->render('districts');     //districts.ctp not created yet
+            
+        }
+    }
 }
 ?>

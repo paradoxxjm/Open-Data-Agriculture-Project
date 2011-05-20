@@ -31,4 +31,27 @@
  * @subpackage    cake.app
  */
 class AppModel extends Model {
+    /* ==============================================================
+     * See http://book.cakephp.org/view/1048/Callback-Methods
+     * Input: 
+     *      $results = array. data returned from query
+     *      $primary = bool. Indicates whether model queried is same as controller
+     * Returns: 
+     *      $results = array. Search results
+     * Description: This array places modified fields in correct space in array
+     */
+    function afterFind($results, $primary=false) {
+        if($primary == true) {
+            if(Set::check($results, '0.0')) {
+                $fields = array_keys( $results[0][0] );
+                foreach($results as $key=>$value) {
+                    foreach( $fields as $fieldName ) {
+                        $results[$key][$this->alias][$fieldName] = $value[0][$fieldName];
+                    }
+                    unset($results[$key][0]);
+                }
+            }
+        }
+        return $results;
+    }
 }
