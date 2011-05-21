@@ -5,9 +5,8 @@ class FarmsController extends AppController {
 
 	function index() {
         $url = $this->params['url'];
-//        print_r($url);
         $query = $this->Parser->queryString('Farm',$url);      //queryString function created to build database queries
-
+		$this->Farm->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
         if ($url['ext']=="html"){
             $farmData = $this->paginate('Farm', $query);
             $this->set('farms', $farmData);
@@ -17,11 +16,8 @@ class FarmsController extends AppController {
             //$returndata= false;
             $farmData = $this->paginate('Farm',$query);
             $this->set('farms', $farmData);
-//            $this->View = 'Webservice.Webservice';
         }
 
-		$this->Farm->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
-//		$this->set('farms', $this->paginate('Farm', $query));
 	}
 
 	function view($id = null) {
@@ -75,10 +71,17 @@ class FarmsController extends AppController {
 		$this->redirect(array('action' => 'index'));
 	}
 
+    /**
+     * parishes
+     *
+     * Returns parish aggregation information
+     *
+     * @todo Implement pagination
+     */
     function parishes($ext = null, $dis = null) {
         if ($ext == null && $dis == null) {
             $parishData = $this->Farm->find('all', array('fields' => array('Parish', 'COUNT(Parish) AS parishCount', 'SUM(PropertySize) AS totalSize'), 'group' => array('Parish')));
-            print_r($parishData);
+//            print_r($parishData);
 //            var_dump($parishData);
             $this->set('parishes',$parishData);
         }
@@ -91,11 +94,12 @@ class FarmsController extends AppController {
         }
         elseif (($ext == ('extension'||'extensions')) && ($dis  == ('district'||'districts'))) {     //data.org.jm/farms/extension(s)/district(s)/
             //echo "Returns parishes+extensions+districts information";
-            $parishes = $this->Farm->find('all', array('fields' => array( 'Farm.Parish', 'Farm.Extension', 'Farm.District', 
-                '(COUNT("Farm.District")) AS FarmCount', '(SUM(PropertySize)) AS PropertySum'), 'group'=>'District', 
+            $parishData = $this->Farm->find('all', array('fields' => array( 'Farm.Parish', 'Farm.Extension', 'Farm.District', 
+                '(COUNT("Farm.District")) AS districtCount', '(SUM(PropertySize)) AS propertySum'), 'group'=>'District', 
                 'order'=>array('Parish ASC', 'Extension ASC', 'District ASC')));
-            $data = $this->Parser->afterQuery($parishes);
-            //$this->render('districts');     //districts.ctp not created yet
+//            $data = $this->Parser->afterQuery($parishes);
+            $this->set('parishes',$parishData);   
+            $this->render('districts');     //districts.ctp not created yet
             
         }
     }

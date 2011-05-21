@@ -5,6 +5,7 @@
 	<tr>
 			<th>Parish</th>
 			<th>Extensions</th>
+			<th>Districts</th>
 			<th>Farm Count</th>
 			<th>Total Size</th>
 	</tr>
@@ -19,7 +20,8 @@
 	<tr<?php echo $class;?>>
 		<td><?php echo $parish['Farm']['Parish']; ?>&nbsp;</td>
 		<td><?php echo $parish['Farm']['Extension']; ?>&nbsp;</td>
-		<td><?php echo $parish['Farm']['farmCount']; ?>&nbsp;</td>
+		<td><?php echo $parish['Farm']['District']; ?>&nbsp;</td>
+		<td><?php echo $parish['Farm']['districtCount']; ?>&nbsp;</td>
 		<td><?php echo $parish['Farm']['propertySum']; ?>&nbsp;</td>
 	</tr>
 <?php endforeach; ?>
