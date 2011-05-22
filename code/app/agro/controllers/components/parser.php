@@ -15,7 +15,25 @@ class ParserComponent extends Object {
             foreach ( $urlParams as $column=>$param) { 
                 if ($column != 'ext' && $column != 'url') {
                     $arrCount++;
-                    $query .= (($arrCount < count($urlParams) ? ("$table.$column='$param' AND ") :  ("$table.$column='$param'") ));
+                    if ( $column == "startdate" ) {     // date format = yyyy-mm-dd
+                        if ( $table == 'Crop') {
+                            $query .= (($arrCount < count($urlParams) ? ("$table.Crop_Date>'$param' AND ") :  ("$table.Crop_Date>'$param'") ));
+                        }
+                        else if ($table = 'Price') {
+                            $query .= (($arrCount < count($urlParams) ? ("$table.Price_Month>'$param' AND ") :  ("$table.Price_Month>'$param'") ));
+                        }
+                    }
+                    else if ( $column == "enddate" ) { 
+                        if ( $table == 'Crop') {
+                            $query .= (($arrCount < count($urlParams) ? ("$table.Crop_Date<'$param' AND ") :  ("$table.Crop_Date<'$param'") ));
+                        }
+                        else if ($table = 'Price') {
+                            $query .= (($arrCount < count($urlParams) ? ("$table.Price_Month<'$param' AND ") :  ("$table.Price_Month<'$param'") ));
+                        }
+                    }
+                    else {
+                        $query .= (($arrCount < count($urlParams) ? ("$table.$column='$param' AND ") :  ("$table.$column='$param'") ));
+                    }
                 }
             }
         }
