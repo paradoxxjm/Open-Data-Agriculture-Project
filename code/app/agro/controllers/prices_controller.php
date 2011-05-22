@@ -7,6 +7,7 @@ class PricesController extends AppController {
         $url = $this->params['url'];
 //        print_r($url);
         $query = $this->Parser->queryString('Price',$url);      //queryString function created to build database queries
+		$this->Price->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
 
         if ($url['ext']=="html"){
             $priceData = $this->paginate('Price', $query);
@@ -17,11 +18,7 @@ class PricesController extends AppController {
             //$returndata= false;
             $priceData = $this->paginate('Price',$query);
             $this->set('prices', $priceData);
-//            $this->View = 'Webservice.Webservice';
         }
-
-		$this->Price->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
-//		$this->set('prices', $this->paginate('Price', $query));
 	}
 
 	function view($id = null) {
@@ -74,5 +71,21 @@ class PricesController extends AppController {
 		$this->Session->setFlash(__('Price was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+
+    function parishes() {
+            $priceData = $this->Price->find('all', array('fields' => array('Parish', 'CropType', 'AVG(FreqPrice) AS avgPrice'), 'group' => array('Parish', 'CropType')));
+//            print_r($priceData);
+            foreach ($priceData as &$priceRecord){
+                if ($priceRecord['Price']['avgPrice'] == 0) {
+//                    echo "Record ".$priceRecord['Price']['Parish']." ".$priceRecord['Price']['avgPrice']."\n";
+                    unset($priceRecord['Price']);
+                }
+            }
+//            $test = $this->Price->find('all', array('fields' => array('Parish', 'CropType', 'FreqPrice'), 'conditions' => array('Price.CropType' => 'Cabbage')));
+//            print_r($test);
+//            print_r($priceData);
+//            var_dump($parishData);
+            $this->set('parishes',$priceData);
+    }
 }
 ?>
