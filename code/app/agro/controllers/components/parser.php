@@ -48,7 +48,8 @@ class ParserComponent extends Object {
                         echo "";
                     }
                     else {
-                        $query .= (($arrCount < count($urlParams) ? ("$table.$column='$param' AND ") :  ("$table.$column='$param'") ));
+//                        $query .= (($arrCount < count($urlParams) ? ("$table.$column='$param' AND ") :  ("$table.$column='$param'") ));
+                        $query[] = array($column => $param);
                     }
                 }
             }

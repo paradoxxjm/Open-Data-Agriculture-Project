@@ -32,7 +32,14 @@
  */
 class AppModel extends Model {
     
-    var $_findMethods = array('paginatecount' => true);
+//    var $_findMethods = array('paginatecount' => true);
+    function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        $this->_findMethods['parishAg'] = true;
+        $this->_findMethods['extensionAg'] = true;
+        $this->_findMethods['districtAg'] = true;
+    }
+
 
     /**
      * Removes 'fields' key from count query on custom finds when it is an array,

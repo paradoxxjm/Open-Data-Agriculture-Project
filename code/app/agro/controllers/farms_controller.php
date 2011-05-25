@@ -2,8 +2,6 @@
 class FarmsController extends AppController {
 
 	var $name = 'Farms';
-//    var $_findMethods = array('parishAg' => true, 'extensionAg' => true, 'districtAg' => true);
-
 
     /**
      *  Returns aggreagate farm data if no queries are specified
@@ -18,13 +16,13 @@ class FarmsController extends AppController {
             $this->redirect(array('controller' => 'farms', 'action' => 'parishes'));
         }
         else {
-            //           $query = $this->Parser->queryString('Farm',$url, $aggParams);      //queryString function created to build database queries
-            $query = array ( 'parish' => 'st.elizabeth');
+            $query = $this->Parser->queryString('Farm',$url, $aggParams);      //queryString function created to build database queries
+            //$query = array('parish' => 'st.elizabeth');
             print_r($query);
             $this->Farm->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
             if ($url['ext']=="html"){
 //                print_r($query);
-                $this->paginate = array ($query);       // $query = conditions string e.g "column = param AND colmun2 = param2"
+                $this->paginate = array('conditions' => $query);       // $query = conditions string e.g "column = param AND colmun2 = param2"
 //                debug($query);die;
                 $this->set('farms',$this->paginate());   
 /*                $farmData = $this->paginate('Farm', $query);

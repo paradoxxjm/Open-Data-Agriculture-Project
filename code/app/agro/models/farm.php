@@ -1,7 +1,6 @@
 <?php
 class Farm extends AppModel {
 	var $name = 'Farm';
-    var $_findMethods = array('parishAg' => true, 'extensionAg' => true, 'districtAg' => true);
 
     function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);

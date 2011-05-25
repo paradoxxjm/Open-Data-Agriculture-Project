@@ -53,6 +53,8 @@
 	?>	</p>
 
 	<div class="paging">
+        <?php echo print_r($this->passedArgs) ?>
+        <?php $this->Paginator->options(array('url' => $this->passedArgs)); ?>
 		<?php echo $this->Paginator->prev('<< ' . __('previous', true), array(), null, array('class'=>'disabled'));?>
 	 | 	<?php echo $this->Paginator->numbers();?>
  |
