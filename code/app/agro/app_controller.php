@@ -31,8 +31,8 @@
  * @subpackage    cake.app
  */
 class AppController extends Controller {
-    var $components = array('RequestHandler','Parser','Webservice.Webservice');
+    var $components = array('RequestHandler','Parser','Webservice.Webservice', 'DebugKit.Toolbar');
 
-    var $paginate = array (
-        'limit' => 10 );
+    var $paginate = array ();
+//        'limit' => 10 );
 }

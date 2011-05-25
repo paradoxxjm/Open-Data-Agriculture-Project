@@ -5,28 +5,38 @@ class CropsController extends AppController {
 
 	function index() {
         $url = $this->params['url'];
-        
 
-//        print_r($url);
-        $query = $this->Parser->queryString('Crop',$url);      //queryString function created to build database queries e.g parish=st.andrew AND extension...
-//        print_r($query);
-
-        if ($url['ext']=="html"){
-            $cropData = $this->paginate('Crop', $query);        
+        if ( count ( array_keys($url) ) == 2) { // Returns aggregrate
+            $cropData = $this->Crop->find('all', array(
+                'fields' => array('CropGroup', 'CropType', 'SUM(PropertySize) AS sumProperty', 'AVG(PropertySize) AS avgProperty', 'SUM(CropArea) AS sumCrop', 'AVG(CropArea) AS avgCrop'), 
+                'group' => array('CropType'), 
+                'order' => array('CropGroup', 'CropType')));
+            //print_r($cropData);
             $this->set('crops', $cropData);
+            $this->Render('aggregate');
         }
-        else{   //JSON or XML
-//            $query = $this->Parser->queryString('Crop',$url);
-            //$returndata= false;
-            $cropData = $this->paginate('Crop',$query);
-            $this->set('crops', $cropData);
-//            $this->View = 'Webservice.Webservice';
-        }
+        else { // > 2 parameters means that a query parameter
+    //        print_r($url);
+            $query = $this->Parser->queryString('Crop',$url);      //queryString function created to build database queries e.g parish=st.andrew AND extension...
+    //        print_r($query);
 
-		$this->Crop->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
-//		$this->set('crops', $this->paginate('Crop', $query));
-//		$this->Crop->recursive = 0;
-//		$this->set('crops', $this->paginate());
+            if ($url['ext']=="html"){
+                $cropData = $this->paginate('Crop', $query);        
+                $this->set('crops', $cropData);
+            }
+            else{   //JSON or XML
+    //            $query = $this->Parser->queryString('Crop',$url);
+                //$returndata= false;
+                $cropData = $this->paginate('Crop',$query);
+                $this->set('crops', $cropData);
+    //            $this->View = 'Webservice.Webservice';
+            }
+
+            $this->Crop->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
+    //		$this->set('crops', $this->paginate('Crop', $query));
+    //		$this->Crop->recursive = 0;
+    //		$this->set('crops', $this->paginate());
+        }
 	}
 
 	function view($id = null) {
@@ -80,22 +90,28 @@ class CropsController extends AppController {
 		$this->redirect(array('action' => 'index'));
 	}
 
-    /*==========================================================================
-     * Function: Parishes
-     * Description: 
-     * Input: URI request
-     * Notes: Created a route in config/routes.php that forwards all requests to farms/parishes to this function
-     * ==========================================================================
-
+    /**
+     * parishes
+     *
+     * Returns parish aggregation information
+     *
+     * @note Created a route in the config/routes.php that forwards all requests to farms/parishes to this function
+     *
+     * @todo Implement pagination
      */
     function parishes($ext = null, $dis = null) {
         if ($ext == null && $dis == null) {
+            $cropData = $this->Crop->find('all', array(
+                'fields' => array('Parish', 'CropGroup', 'CropType', 'SUM(PropertySize) AS sumProperty', 'AVG(PropertySize) AS avgProperty', 'SUM(CropArea) AS sumCrop', 'AVG(CropArea) AS avgCrop'), 
+                'group' => array('Parish', 'CropType'), 
+                'order' => array('Parish', 'CropGroup', 'CropType')));
+            $this->set('crops', $cropData);
             $this->render('parishes');
         }
         else if ($ext != null && $dis == null) {
             $this->render('extensions');
         }
-        else if (($ext == null && $dis == null) {
+        else if ($ext == null && $dis == null) {
             $this->render('districts');
         }
     }

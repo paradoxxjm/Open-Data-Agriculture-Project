@@ -1,4 +1,4 @@
-<div class="prices index">
+<div class="prices">
 	<h2><?php __('Prices');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
@@ -9,7 +9,7 @@
 			<th><?php echo $this->Paginator->sort('FreqPrice');?></th>
 			<th><?php echo $this->Paginator->sort('SupplyStatus');?></th>
 			<th><?php echo $this->Paginator->sort('Quality');?></th>
-			<th><?php echo $this->Paginator->sort('Price_Month');?></th>
+			<th><?php echo $this->Paginator->sort('PriceMonth');?></th>
 			<th><?php echo $this->Paginator->sort('Xcoord');?></th>
 			<th><?php echo $this->Paginator->sort('Ycoord');?></th>
 			<th><?php echo $this->Paginator->sort('id');?></th>
@@ -31,14 +31,14 @@
 		<td><?php echo $price['Price']['FreqPrice']; ?>&nbsp;</td>
 		<td><?php echo $price['Price']['SupplyStatus']; ?>&nbsp;</td>
 		<td><?php echo $price['Price']['Quality']; ?>&nbsp;</td>
-		<td><?php echo $price['Price']['Price_Month']; ?>&nbsp;</td>
+		<td><?php echo $price['Price']['PriceMonth']; ?>&nbsp;</td>
 		<td><?php echo $price['Price']['Xcoord']; ?>&nbsp;</td>
 		<td><?php echo $price['Price']['Ycoord']; ?>&nbsp;</td>
 		<td><?php echo $price['Price']['id']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $price['Price']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $price['Price']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $price['Price']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $price['Price']['id'])); ?>
+			<!--<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $price['Price']['id'])); ?>
+			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $price['Price']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $price['Price']['id'])); ?>-->
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -57,9 +57,9 @@
 		<?php echo $this->Paginator->next(__('next', true) . ' >>', array(), null, array('class' => 'disabled'));?>
 	</div>
 </div>
-<div class="actions">
+<!--<div class="actions">
 	<h3><?php __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Price', true), array('action' => 'add')); ?></li>
 	</ul>
-</div>
+</div>-->

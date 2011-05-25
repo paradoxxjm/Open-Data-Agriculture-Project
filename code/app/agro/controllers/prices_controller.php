@@ -6,18 +6,24 @@ class PricesController extends AppController {
 	function index() {
         $url = $this->params['url'];
 //        print_r($url);
-        $query = $this->Parser->queryString('Price',$url);      //queryString function created to build database queries
-		$this->Price->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
 
-        if ($url['ext']=="html"){
-            $priceData = $this->paginate('Price', $query);
-            $this->set('prices', $priceData);
-        }
-        else{   //JSON or XML
-            $query = $this->Parser->queryString('Price',$url);
-            //$returndata= false;
-            $priceData = $this->paginate('Price',$query);
-            $this->set('prices', $priceData);
+        if ( count ( array_keys($url) ) == 2) { // Returns aggregrate
+            $this->redirect(array('controller' => 'prices', 'action' => 'parishes'));
+        } 
+        else {
+            $query = $this->Parser->queryString('Price',$url);      //queryString function created to build database queries
+            $this->Price->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
+
+            if ($url['ext']=="html"){
+                $priceData = $this->paginate('Price', $query);
+                $this->set('prices', $priceData);
+            }
+            else{   //JSON or XML
+                $query = $this->Parser->queryString('Price',$url);
+                //$returndata= false;
+                $priceData = $this->paginate('Price',$query);
+                $this->set('prices', $priceData);
+            }
         }
 	}
 
