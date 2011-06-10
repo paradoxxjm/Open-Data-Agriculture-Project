@@ -3,6 +3,11 @@ class CropsController extends AppController {
 
 	var $name = 'Crops';
 
+    /**
+     *  Returns aggreagate crop data if no queries are specified
+     *
+     *  @todo implement top aggregation 
+     */
 	function index() {
         $url = $this->params['url'];
         $aggParams = '';
@@ -11,11 +16,22 @@ class CropsController extends AppController {
         if ( count ( array_keys($url) ) == 2) { // Returns aggregrate
             $this->paginate = array('cropAg');
             $this->set('crops', $this->paginate());
-            //$this->set('crops', $cropData);
             $this->Render('aggregate');
         }
         else { // > 2 parameters implies a query request has been made
             $query = $this->Parser->queryString('Crop',$url);      //queryString function created to build database queries e.g parish=st.andrew AND extension...
+
+            //Check for Aggregates
+            //======================
+            if ($this->Parser->isAgg($url)) {
+                //echo "Aggregate called";
+                $aggPair = $this->Parser->getAgg($url);
+                $aggField = (string)$aggPair['key']."(".$aggPair['value'].")";
+                //$aggField = "SUM(propertySize) AS 'sum'";
+                $this->paginate = array('aggregate','fields' => $aggField, 'conditions' => $query);
+                $this->set('crops', $this->paginate());
+                $this->view = 'Webservice.Webservice';
+            }
 
             if ($url['ext']=="html"){
                 $cropData = $this->paginate('Crop', $query);        

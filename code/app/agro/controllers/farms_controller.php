@@ -1,41 +1,52 @@
 <?php
 class FarmsController extends AppController {
+/**
+ * @todo Complete aggregate- top
+ */
 
 	var $name = 'Farms';
 
     /**
      *  Returns aggreagate farm data if no queries are specified
      *
-     *  @todo implement queries using paginate function
+     *  @todo implement top aggregation 
      */
 	function index() {
         $url = $this->params['url'];
+        //print_r($url);
         $aggParams = '';
+        $searchType = "Farms";
+        $this->Farm->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
 
-        if ( count ( array_keys($url) ) == 2) { // Returns aggregrate
+        if (count(array_keys($url))==2) { // Returns aggregrate
             $this->redirect(array('controller' => 'farms', 'action' => 'parishes'));
         }
-        else {
-            $query = $this->Parser->queryString('Farm',$url, $aggParams);      //queryString function created to build database queries
-            //$query = array('parish' => 'st.elizabeth');
-            print_r($query);
-            $this->Farm->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
-            if ($url['ext']=="html"){
-//                print_r($query);
-                $this->paginate = array('conditions' => $query);       // $query = conditions string e.g "column = param AND colmun2 = param2"
-//                debug($query);die;
+        else { 
+            $query = $this->Parser->queryString('Farm',$url);      //queryString function created to build database queries
+
+            //debug($url);die;
+
+            //Check for Aggregates
+            //======================
+            if ($this->Parser->isAgg($url)) {
+                //echo "Aggregate called";
+                $aggPair = $this->Parser->getAgg($url);
+                $aggField = (string)$aggPair['key']."(".$aggPair['value'].")";
+                //$aggField = "SUM(propertySize) AS 'sum'";
+                $this->paginate = array('aggregate','fields' => $aggField, 'conditions' => $query);
+                $this->set('farms', $this->paginate());
+                $this->view = 'Webservice.Webservice';
+            }
+
+            if ($url['ext']=='html'){
+                $this->paginate = array('fields' => $aggField, 'conditions' => $query);       // $query = conditions string e.g "column = param AND colmun2 = param2"
                 $this->set('farms',$this->paginate());   
-/*                $farmData = $this->paginate('Farm', $query);
-$this->set('farms', $farmData);*/
             }
             else{   //JSON or XML
                 $query = $this->Parser->queryString('Farm',$url);
-                //$returndata= false;
-                $farmData = $this->paginate('Farm',$query);
-                $this->set('farms', $farmData);
+                $this->set('farms', $this->paginate($query));
             }
         }
-
 	}
 
 	function view($id = null) {

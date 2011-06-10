@@ -3,16 +3,32 @@ class PricesController extends AppController {
 
 	var $name = 'Prices';
 
+    /**
+     *  Returns aggreagate prices data if no queries are specified
+     *
+     *  @todo implement top aggregation 
+     */
 	function index() {
         $url = $this->params['url'];
-//        print_r($url);
+        $this->Price->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
 
         if ( count ( array_keys($url) ) == 2) { // Returns aggregrate
             $this->redirect(array('controller' => 'prices', 'action' => 'parishes'));
         } 
         else {
             $query = $this->Parser->queryString('Price',$url);      //queryString function created to build database queries
-            $this->Price->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
+
+            //Check for Aggregates
+            //======================
+            if ($this->Parser->isAgg($url)) {
+                //echo "Aggregate called";
+                $aggPair = $this->Parser->getAgg($url);
+                $aggField = (string)$aggPair['key']."(".$aggPair['value'].")";
+                //$aggField = "SUM(propertySize) AS 'sum'";
+                $this->paginate = array('aggregate','fields' => $aggField, 'conditions' => $query);
+                $this->set('prices', $this->paginate());
+                $this->view = 'Webservice.Webservice';
+            }
 
             if ($url['ext']=="html"){
                 $priceData = $this->paginate('Price', $query);

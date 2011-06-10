@@ -38,8 +38,26 @@ class AppModel extends Model {
         $this->_findMethods['parishAg'] = true;
         $this->_findMethods['extensionAg'] = true;
         $this->_findMethods['districtAg'] = true;
+        $this->_findMethods['cropAg'] = true;
+        $this->_findMethods['aggregate'] = true;
     }
 
+    function _findAggregate($state, $query, $results = array()) {
+        if ($state == 'before') {
+            //$query['fields'] = array( "SUM($sumField) AS sum");
+
+//            $query['conditions']['approved'] = 1;
+            if (!empty($query['operation'])) {
+                return $this->_findPaginatecount($state, $query, $results);
+            }
+            return $query;
+        } elseif ($state == 'after') {
+            if (!empty($query['operation'])) {
+                return $this->_findPaginatecount($state, $query, $results);
+            }
+            return $results;
+        }
+    }
 
     /**
      * Removes 'fields' key from count query on custom finds when it is an array,

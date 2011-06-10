@@ -11,7 +11,7 @@ class Farm extends AppModel {
 
 
     function _findParishAg($state, $query, $results = array()) {
-        if ($state === 'before') {
+        if ($state == 'before') {
             $query['fields'] = array( 'Parish', 'COUNT(Parish) AS parishCount', 'SUM(PropertySize) AS totalSize');
             $query['group'] = 'Parish';
             if (empty($query['order']))
@@ -31,7 +31,7 @@ class Farm extends AppModel {
     }
 
     function _findExtensionAg($state, $query, $results = array()) {
-        if ($state === 'before') {
+        if ($state == 'before') {
             $query['fields'] = array( 'Farm.Parish', 'Farm.Extension', '(COUNT("Farm.Extension")) AS farmCount', '(SUM(PropertySize)) AS propertySum');
             $query['group'] = 'Extension';
             if (empty($query['order']))
@@ -51,7 +51,7 @@ class Farm extends AppModel {
     }
 
     function _findDistrictAg($state, $query, $results = array()) {
-        if ($state === 'before') {
+        if ($state == 'before') {
             $query['fields'] = array( 'Farm.Parish', 'Farm.Extension', 'Farm.District', '(COUNT("Farm.District")) AS districtCount', '(SUM(PropertySize)) AS propertySum'); 
             $query['group'] = 'District';
             if (empty($query['order']))
