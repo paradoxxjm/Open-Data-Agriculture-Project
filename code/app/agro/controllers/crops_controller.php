@@ -5,37 +5,26 @@ class CropsController extends AppController {
 
 	function index() {
         $url = $this->params['url'];
+        $aggParams = '';
+        $this->Crop->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
 
         if ( count ( array_keys($url) ) == 2) { // Returns aggregrate
-            $cropData = $this->Crop->find('all', array(
-                'fields' => array('CropGroup', 'CropType', 'SUM(PropertySize) AS sumProperty', 'AVG(PropertySize) AS avgProperty', 'SUM(CropArea) AS sumCrop', 'AVG(CropArea) AS avgCrop'), 
-                'group' => array('CropType'), 
-                'order' => array('CropGroup', 'CropType')));
-            //print_r($cropData);
-            $this->set('crops', $cropData);
+            $this->paginate = array('cropAg');
+            $this->set('crops', $this->paginate());
+            //$this->set('crops', $cropData);
             $this->Render('aggregate');
         }
-        else { // > 2 parameters means that a query parameter
-    //        print_r($url);
+        else { // > 2 parameters implies a query request has been made
             $query = $this->Parser->queryString('Crop',$url);      //queryString function created to build database queries e.g parish=st.andrew AND extension...
-    //        print_r($query);
 
             if ($url['ext']=="html"){
                 $cropData = $this->paginate('Crop', $query);        
                 $this->set('crops', $cropData);
             }
             else{   //JSON or XML
-    //            $query = $this->Parser->queryString('Crop',$url);
-                //$returndata= false;
                 $cropData = $this->paginate('Crop',$query);
                 $this->set('crops', $cropData);
-    //            $this->View = 'Webservice.Webservice';
             }
-
-            $this->Crop->recursive = -1; // See http://book.cakephp.org/view/1063/recursive
-    //		$this->set('crops', $this->paginate('Crop', $query));
-    //		$this->Crop->recursive = 0;
-    //		$this->set('crops', $this->paginate());
         }
 	}
 
@@ -101,19 +90,16 @@ class CropsController extends AppController {
      */
     function parishes($ext = null, $dis = null) {
         if ($ext == null && $dis == null) {
-            $cropData = $this->Crop->find('all', array(
-                'fields' => array('Parish', 'CropGroup', 'CropType', 'SUM(PropertySize) AS sumProperty', 'AVG(PropertySize) AS avgProperty', 'SUM(CropArea) AS sumCrop', 'AVG(CropArea) AS avgCrop'), 
-                'group' => array('Parish', 'CropType'), 
-                'order' => array('Parish', 'CropGroup', 'CropType')));
-            $this->set('crops', $cropData);
+            $this->paginate = array('parishAg');
+            $this->set('crops', $this->paginate());
             $this->render('parishes');
         }
-        else if ($ext != null && $dis == null) {
+/*        else if ($ext != null && $dis == null) {
             $this->render('extensions');
         }
         else if ($ext == null && $dis == null) {
             $this->render('districts');
-        }
+        }*/
     }
 }
 ?>
